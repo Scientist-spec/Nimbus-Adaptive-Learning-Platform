@@ -12,30 +12,50 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { BookOpen, LogOut, User as UserIcon, LayoutDashboard, Home } from "lucide-react";
+import { BookOpen, LogOut, User as UserIcon, LayoutDashboard, Home, PenTool, BarChart3 } from "lucide-react";
 
 export const Navigation = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        loadUserRoles(session.user.id);
+      }
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        loadUserRoles(session.user.id);
+      } else {
+        setUserRoles([]);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
+  const loadUserRoles = async (userId: string) => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId);
+    
+    setUserRoles(data?.map(r => r.role) || []);
+  };
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate("/");
   };
+
+  const isInstructor = userRoles.includes("instructor") || userRoles.includes("admin");
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-lg border-b border-border">
@@ -68,6 +88,31 @@ export const Navigation = () => {
                   Dashboard
                 </Link>
               </Button>
+
+              {isInstructor && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                  >
+                    <Link to="/instructor" className="flex items-center gap-2">
+                      <PenTool className="h-4 w-4" />
+                      Instructor
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                  >
+                    <Link to="/analytics" className="flex items-center gap-2">
+                      <BarChart3 className="h-4 w-4" />
+                      Analytics
+                    </Link>
+                  </Button>
+                </>
+              )}
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -251,6 +251,55 @@ export default function Dashboard() {
           </Card>
         )}
 
+        {/* Quick Start Quiz */}
+        {!isInstructor && (
+          <Card className="mb-8 shadow-soft border-2 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <PlayCircle className="h-5 w-5 text-primary" />
+                Quick Start Quiz
+              </CardTitle>
+              <CardDescription>Start a quiz by topic or difficulty</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Button
+                  onClick={() => navigate("/quiz?tag=math")}
+                  variant="outline"
+                  className="h-20 flex flex-col gap-2"
+                >
+                  <Target className="h-6 w-6 text-primary" />
+                  <span className="text-sm">Math</span>
+                </Button>
+                <Button
+                  onClick={() => navigate("/quiz?tag=programming")}
+                  variant="outline"
+                  className="h-20 flex flex-col gap-2"
+                >
+                  <BookOpen className="h-6 w-6 text-accent" />
+                  <span className="text-sm">Programming</span>
+                </Button>
+                <Button
+                  onClick={() => navigate("/quiz?tag=science")}
+                  variant="outline"
+                  className="h-20 flex flex-col gap-2"
+                >
+                  <Brain className="h-6 w-6 text-success" />
+                  <span className="text-sm">Science</span>
+                </Button>
+                <Button
+                  onClick={() => navigate("/quiz?difficulty=3")}
+                  variant="outline"
+                  className="h-20 flex flex-col gap-2"
+                >
+                  <TrendingUp className="h-6 w-6 text-warning" />
+                  <span className="text-sm">Mixed</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Available Quizzes */}
         <Card className="shadow-soft">
           <CardHeader>
@@ -281,6 +330,7 @@ export default function Dashboard() {
                   <Card
                     key={quiz.id}
                     className="hover:shadow-medium transition-all cursor-pointer border-2 border-border hover:border-primary"
+                    onClick={() => !isInstructor && navigate(`/quiz?tag=${quiz.tags?.[0] || ""}`)}
                   >
                     <CardHeader>
                       <div className="flex items-start justify-between mb-2">
@@ -302,7 +352,18 @@ export default function Dashboard() {
                           </Badge>
                         ))}
                       </div>
-                      <Button className="w-full" size="sm">
+                      <Button
+                        className="w-full"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isInstructor) {
+                            navigate("/instructor");
+                          } else {
+                            navigate(`/quiz?tag=${quiz.tags?.[0] || ""}`);
+                          }
+                        }}
+                      >
                         {isInstructor ? "Manage" : "Start Quiz"}
                       </Button>
                     </CardContent>
