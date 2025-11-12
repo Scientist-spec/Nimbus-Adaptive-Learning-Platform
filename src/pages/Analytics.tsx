@@ -282,7 +282,7 @@ export default function Analytics() {
                       cx="50%"
                       cy="50%"
                       outerRadius={100}
-                      label={(entry) => `Level ${entry.difficulty}`}
+                      label={(entry: any) => `Level ${entry.difficulty}`}
                     >
                       {analytics?.difficultyDistribution.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
