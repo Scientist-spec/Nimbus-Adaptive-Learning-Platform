@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/69ce0754-d36c-48ff-a815-76fe5ef22eda
+**URL**: https://preview--gleam-user-flow.lovable.app/
 
 ## How can I edit this code?
 
