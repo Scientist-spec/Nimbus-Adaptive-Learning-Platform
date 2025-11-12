@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Welcome to NIMBUS ADAPTIVE LEARNING PLATFORM project
 
 ## Project info
 
